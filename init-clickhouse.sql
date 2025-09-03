@@ -1,10 +1,10 @@
 -- Create database
-CREATE DATABASE IF NOT EXISTS nyctaxi;
+CREATE DATABASE IF NOT EXISTS inventory;
 
 -- =========================
 -- YELLOW TAXI
 -- =========================
-CREATE TABLE IF NOT EXISTS nyctaxi.yellow_taxi_trips
+CREATE TABLE IF NOT EXISTS inventory.yellow_taxi_trips
 (
     -- surrogate id
     trip_id               UInt64,
@@ -59,14 +59,14 @@ PARTITION BY toYYYYMM('tpep_pickup_datetime')
 ORDER BY (trip_id, tpep_pickup_datetime);
 
 -- View (tùy chọn) để lấy "current rows" nếu bạn dùng __op từ CDC (c/u/r là hiện hành, d là xóa)
--- CREATE VIEW nyctaxi.yellow_taxi_trips_current AS
--- SELECT * FROM nyctaxi.yellow_taxi_trips WHERE (__op != 'd') OR (__op = '' OR __op IS NULL);
+-- CREATE VIEW inventory.yellow_taxi_trips_current AS
+-- SELECT * FROM inventory.yellow_taxi_trips WHERE (__op != 'd') OR (__op = '' OR __op IS NULL);
 
 
 -- =========================
 -- GREEN TAXI
 -- =========================
-CREATE TABLE IF NOT EXISTS nyctaxi.green_taxi_trips
+CREATE TABLE IF NOT EXISTS inventory.green_taxi_trips
 (
     trip_id               UInt64,
 
@@ -119,5 +119,5 @@ ENGINE = ReplacingMergeTree(__lsn)
 PARTITION BY toYYYYMM(lpep_pickup_datetime)
 ORDER BY (trip_id, lpep_pickup_datetime);
 
--- CREATE VIEW nyctaxi.green_taxi_trips_current AS
--- SELECT * FROM nyctaxi.green_taxi_trips WHERE (__op != 'd') OR (__op = '' OR __op IS NULL);
+-- CREATE VIEW inventory.green_taxi_trips_current AS
+-- SELECT * FROM inventory.green_taxi_trips WHERE (__op != 'd') OR (__op = '' OR __op IS NULL);

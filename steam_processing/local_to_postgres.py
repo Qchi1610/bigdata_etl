@@ -3,13 +3,13 @@ import os
 # load_dotenv()
 from pyarrow.parquet import ParquetFile
 import pyarrow as pa 
-from postgresql_client import PostgresqlClient
+from postgres.postgresql_client import PostgresSQLClient
 
 def insert_data():
-    pstg = PostgresqlClient(
-        db = os.getenv("POSTGRES_DB"),
+    pstg = PostgresSQLClient(
+        database = os.getenv("POSTGRES_DB"),
         user = os.getenv("POSTGRES_USER"),
-        password = os.getenv("POSTGRES_PASSWORD")
+        password = os.getenv("POSTGRES_PASSWORD"),
     )
 
     data_path 

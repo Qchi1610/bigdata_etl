@@ -84,16 +84,16 @@ services:
     command: ["postgres", "-c", "wal_level=logical"]
     container_name: dw-postgresql
     healthcheck:
-      test: ["CMD", "psql", "-U", "k6", "-c", "SELECT 1"]
+      test: ["CMD", "psql", "-U", "k13", "-c", "SELECT 1"]
       interval: 10s
       timeout: 5s
       retries: 5
     ports:
       - "5432:5432"
     environment:
-      - POSTGRES_DB=k6
-      - POSTGRES_USER=k6
-      - POSTGRES_PASSWORD=k6
+      - POSTGRES_DB=k13
+      - POSTGRES_USER=k13
+      - POSTGRES_PASSWORD=k13
     volumes:
       - dw_postgres_data:/var/lib/postgresql/data
 

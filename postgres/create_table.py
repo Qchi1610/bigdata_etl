@@ -1,12 +1,12 @@
 import os
-# from dotenv import load_dotenv
-# load_dotenv()
+from dotenv import load_dotenv
+load_dotenv()
 import pyarrow as pa 
-from postgresql_client import PostgresqlClient
+from postgresql_client import PostgresSQLClient
 
 def create_table():
-    pstg = PostgresqlClient(
-        db = os.getenv("POSTGRES_DB"),
+    pstg = PostgresSQLClient(
+        database = os.getenv("POSTGRES_DB"),
         user = os.getenv("POSTGRES_USER"),
         password = os.getenv("POSTGRES_PASSWORD"),
     )

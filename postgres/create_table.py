@@ -11,7 +11,7 @@ def create_table():
         password = os.getenv("POSTGRES_PASSWORD"),
     )
 
-    pstg.execute_query("""CREATE TABLE IF NOT EXISTS yellow_trips (
+    pstg.execute_query("""CREATE TABLE IF NOT EXISTS raw.yellow_trips (
                         trip_id                bigserial PRIMARY KEY,  -- PK để Debezium track
                         vendor_id              smallint,
                         tpep_pickup_datetime   timestamptz,

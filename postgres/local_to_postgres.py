@@ -8,7 +8,7 @@ from time import sleep
 
 table_name = "raw.yellow_trips"
 data_path = "data/yellow_tripdata_2024-01.parquet"
-chunk_size = 10000
+chunk_size = 100
 
 def insert_data(df):
     pstg = PostgresSQLClient(
@@ -19,6 +19,7 @@ def insert_data(df):
     #lấy ttin columns
     try:
         columns = pstg.get_columns(table_name)
+        columns = [c for c in columns if c not in ("trip_id", "created_at")]
         print(columns)
     except Exception as e:
         print(f"Error:{e}")

@@ -9,6 +9,6 @@
     "database.dbname": "k13",
     "plugin.name": "pgoutput",
     "database.server.name": "device",
-    "table.include.list": "iot.taxi_nyc_time_series"
+    "table.include.list": "raw.yellow_trips"
   }
 }

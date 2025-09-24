@@ -70,92 +70,13 @@ def create_spark_session():
 
 
 def create_initial_dataframe(spark_session):
-    """
-        Reads the streaming data and creates the initial dataframe accordingly
-    """
-    try: 
-        df = (spark_session
-            .readStream
-            .format("kafka")
-            .option("kafka.bootstrap.servers", "localhost:9092")
-            .option("subscribe", "device.iot.taxi_nyc_time_series")
-            # .option("startingOffsets", "earliest")
-            .option("failOnDataLoss", "false")
-            .load())
-        logging.info("Initial dataframe created successfully!")
-    except Exception as e:
-        logging.warning(f"Initial dataframe could not be created due to exception: {e}")
-
-    return df
+    df = (spark_session
+          .readStream
+          .)
 
 
 def create_final_dataframe(df, spark_session):
-    """
-        Modifies the initial dataframe, and creates the final dataframe
-    """
-
-    # Load the configuration file
-    with open('./stream_processing/schema_config.json', 'r') as f:
-        config = json.load(f)
-
-    # Define a mapping from type names to PySpark types
-    type_mapping = {
-        "IntegerType": IntegerType(),
-        "StringType": StringType(),
-        "TimestampNTZType": TimestampNTZType(),
-        "DoubleType": DoubleType(),
-        "LongType": LongType()
-    }
-
-    # Create the schema based on the configuration file
-    payload_after_schema = StructType([
-        StructField(field["name"], type_mapping[field["type"]], field["nullable"])
-        for field in config["fields"]
-    ])
-
-    data_schema = StructType([
-        StructField("payload", StructType([
-            StructField("after", payload_after_schema, True)
-        ]), True)
-    ])
-
-
-    # Explain:
-    #  1. Converts the value column of df to a STRING type and names the new column 'json'
-    #  2. Converts the new 'json' column into JSON format based on the schema 'data_schema' with the alias 'data'.
-    #  3. Based on the Debezium JSON, only extracts the data from "payload.after.*"
-    parsed_df = df.selectExpr("CAST(value AS STRING) as json") \
-                .select(from_json(col("json"), data_schema).alias("data")) \
-                .select("data.payload.after.*")
-
-    parsed_df = parsed_df \
-        .withColumn("tpep_pickup_datetime", (col("tpep_pickup_datetime") / 1000000).cast("timestamp")) \
-        .withColumn("tpep_dropoff_datetime", (col("tpep_dropoff_datetime") / 1000000).cast("timestamp"))
-
-    parsed_df.createOrReplaceTempView("nyc_taxi_view")
-
-    df_final = spark.sql("""
-        SELECT
-            * 
-        FROM nyc_taxi_view
-    """)
-
-    logging.info("Final dataframe created successfully!")
-    return df_final
-
-
-def start_streaming(df):
-    """
-    Store data into Datalake (MinIO) with parquet format
-    """
-    logging.info("Streaming is being started...")
-    stream_query = df.writeStream \
-                        .format("parquet") \
-                        .outputMode("append") \
-                        .option("path", f"s3a://{BUCKET_NAME}/stream/") \
-                        .option("checkpointLocation", f"s3a://{BUCKET_NAME}/stream/checkpoint") \
-                        .start() 
-    return stream_query.awaitTermination()
+    
 
 
 if __name__ == '__main__':
